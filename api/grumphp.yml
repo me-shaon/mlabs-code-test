@@ -1,0 +1,15 @@
+grumphp:
+  tasks:
+    phpcs:
+      standard: PSR12
+      ignore_patterns: [
+          ./tests/*,
+          ./resources/*,
+          ./database/*,
+          ./bootstrap/*,
+          ./public/*,
+          ./config/*,
+          ./routes/*,
+          ./storage/*,
+          ./vendor/*,
+      ]
