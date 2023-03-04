@@ -23,6 +23,7 @@ class OpenWeatherApiService implements WeatherApiInterface
         $response = Http::get("{$this->getBaseURL()}/weather", [
             'lat' => $lat,
             'lon' => $lon,
+            'units' => 'metric',
             'appid' => config('weatherapi.services.open_weather.api_key')
         ]);
 

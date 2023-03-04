@@ -10,6 +10,6 @@ class CacheKey
 {
     public static function getUserCurrentWeatherKey(User $user): string
     {
-        return "user:$user->id:current-weather";
+        return "user:$user->uuid:current-weather";
     }
 }
