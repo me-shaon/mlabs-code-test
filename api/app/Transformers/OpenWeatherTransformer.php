@@ -13,8 +13,8 @@ class OpenWeatherTransformer extends AbstractWeatherTransformer
 
         return [
             'location' => implode(", ", array_filter([$city, $country], fn ($item) => !empty($item))),
-            'min_temp' => optional($this->weather->current['main'])['temp_min'] . "°",
-            'max_temp' => optional($this->weather->current['main'])['temp_max'] . "°",
+            'min_temp' => round(optional($this->weather->current['main'])['temp_min']) . "°",
+            'max_temp' => round(optional($this->weather->current['main'])['temp_max']) . "°",
         ];
     }
 
