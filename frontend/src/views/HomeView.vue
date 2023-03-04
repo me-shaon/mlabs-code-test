@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import ApiTest from "@/components/ApiTest.vue";
+import WeatherHome from "@/components/WeatherHome.vue";
 </script>
 
 <template>
   <main>
-    <api-test></api-test>
+    <weather-home></weather-home>
   </main>
 </template>
