@@ -19,6 +19,8 @@ class Kernel extends ConsoleKernel
         $schedule->job(new FetchWeatherDataJob())
             ->when(intval(time() / 60) % config('weatherapi.data_sync_frequency') === 0)
             ->onOneServer();
+
+        $schedule->command('cache:prune-stale-tags')->daily();
     }
 
     /**
