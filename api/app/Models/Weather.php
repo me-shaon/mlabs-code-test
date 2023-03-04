@@ -12,4 +12,8 @@ class Weather extends Model
 {
     use HasFactory;
     use SoftDeletes;
+
+    protected $casts = [
+        'current' => 'json'
+    ];
 }
