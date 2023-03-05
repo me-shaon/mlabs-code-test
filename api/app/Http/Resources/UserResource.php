@@ -17,7 +17,7 @@ class UserResource extends JsonResource
     {
         parent::__construct($user);
 
-        $this->weatherTransformer = resolve(AbstractWeatherTransformer::class, ['weather' => $user->weather]);
+
     }
 
     /**
@@ -27,13 +27,19 @@ class UserResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        $weatherData = null;
+        if ($this->weather) {
+            $weatherTransformer = resolve(AbstractWeatherTransformer::class, ['weather' => $this->weather]);
+            $weatherData = [
+                'summary' => $weatherTransformer->getSummary(),
+                'details' => $weatherTransformer->getDetails()
+            ];
+        }
+
         return [
             'uuid' => $this->uuid,
             'name' => $this->name,
-            'weather' => [
-                'summary' => $this->weatherTransformer->getSummary(),
-                'details' => $this->weatherTransformer->getDetails()
-            ]
+            'weather' => $weatherData
         ];
     }
 }

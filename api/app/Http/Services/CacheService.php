@@ -25,7 +25,7 @@ class CacheService
         return Cache::get(CacheKey::getAllUsersKey(), collect());
     }
 
-    public function updateUserWeather(string $userId)
+    public function updateUserWeather(int $userId)
     {
         Cache::put(
             CacheKey::getUserCurrentWeatherKey($userId),
@@ -34,7 +34,7 @@ class CacheService
         );
     }
 
-    public function getUserWeather(string $userId)
+    public function getUserWeather(int $userId)
     {
         if (!Cache::has(CacheKey::getUserCurrentWeatherKey($userId))) {
             $this->updateUserWeather($userId);

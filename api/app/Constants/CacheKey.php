@@ -6,7 +6,7 @@ namespace App\Constants;
 
 class CacheKey
 {
-    public static function getUserCurrentWeatherKey(string $userId): string
+    public static function getUserCurrentWeatherKey(int $userId): string
     {
         return "user:$userId:current-weather";
     }

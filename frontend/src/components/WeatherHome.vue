@@ -5,7 +5,7 @@ import WeatherDetailModal from "@/components/WeatherDetailModal.vue";
 
 const selectedUser = ref(null);
 const users = ref([]);
-const loading = ref(false)
+const loading = ref(false);
 
 const { open } = useModal({
   component: WeatherDetailModal,
@@ -14,7 +14,10 @@ const { open } = useModal({
   },
 });
 
-const showModal = (user: null) => {
+const showModal = (user: any) => {
+  if (!user || !user.weather) {
+    return;
+  }
   selectedUser.value = user;
   open();
 };
@@ -44,8 +47,8 @@ onMounted(async () => {
         <div v-else class="divide-y divide-dashed">
           <div v-for="user in users" :key="user.uuid" @click="showModal(user)" class="flex justify-between items-center py-4 cursor-pointer">
             <span class="font-semibold text-lg w-2/4">{{ user.name }}</span>
-            <span class="font-normal text-lg w-2/4">{{ user.weather.summary.location }}</span>
-            <span class="font-normal text-lg w-1/4 text-right">{{ user.weather.summary.current_temp }}</span>
+            <span class="font-normal text-lg w-2/4 text-center">{{ user?.weather?.summary.location || '-' }}</span>
+            <span class="font-normal text-lg w-1/4 text-right">{{ user?.weather?.summary.current_temp || '-' }}</span>
           </div>
 
           <ModalsContainer />

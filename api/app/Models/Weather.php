@@ -16,4 +16,8 @@ class Weather extends Model
     protected $casts = [
         'current' => 'json'
     ];
+
+    protected $fillable = [
+        'current'
+    ];
 }
