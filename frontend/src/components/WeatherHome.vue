@@ -2,10 +2,22 @@
 import { onMounted, ref } from "vue";
 import { ModalsContainer, useModal } from "vue-final-modal";
 import WeatherDetailModal from "@/components/WeatherDetailModal.vue";
+import Echo from "laravel-echo";
+import Pusher from "pusher-js";
 
 const selectedUser = ref(null);
 const users = ref([]);
 const loading = ref(false);
+const echo = new Echo({
+  broadcaster: 'pusher',
+  key: '1efa6f49b7dabae488be',
+  cluster: 'ap2',
+  forceTLS: true,
+});
+echo.channel("users-list")
+    .listen("UserDataUpdated", (e) => {
+      users.value = e.users;
+    });
 
 const { open } = useModal({
   component: WeatherDetailModal,
