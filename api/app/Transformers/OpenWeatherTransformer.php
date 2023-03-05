@@ -13,13 +13,21 @@ class OpenWeatherTransformer extends AbstractWeatherTransformer
 
         return [
             'location' => implode(", ", array_filter([$city, $country], fn ($item) => !empty($item))),
-            'min_temp' => round(optional($this->weather->current['main'])['temp_min']) . "°",
-            'max_temp' => round(optional($this->weather->current['main'])['temp_max']) . "°",
+            'current_temp' => round(optional($this->weather->current['main'])['temp']) . "°C",
         ];
     }
 
     public function getDetails(): array
     {
-        return [];
+        return [
+            'current_temp' => round(optional($this->weather->current['main'])['temp']) . "°C",
+            'min_temp' => round(optional($this->weather->current['main'])['temp_min']) . "°C",
+            'max_temp' => round(optional($this->weather->current['main'])['temp_max']) . "°C",
+            'feels_like' => round(optional($this->weather->current['main'])['feels_like']) . "°C",
+            'pressure' => optional($this->weather->current['main'])['pressure'],
+            'humidity' => optional($this->weather->current['main'])['humidity'],
+            'status' => optional($this->weather->current['weather'][0])['main'],
+            'description' => optional($this->weather->current['weather'][0])['description'],
+        ];
     }
 }

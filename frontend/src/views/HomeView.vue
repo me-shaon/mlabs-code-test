@@ -4,6 +4,6 @@ import WeatherHome from "@/components/WeatherHome.vue";
 
 <template>
   <main>
-    <weather-home></weather-home>
+    <WeatherHome />
   </main>
 </template>
