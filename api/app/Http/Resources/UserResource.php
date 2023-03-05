@@ -18,7 +18,6 @@ class UserResource extends JsonResource
         parent::__construct($user);
 
         $this->weatherTransformer = resolve(AbstractWeatherTransformer::class, ['weather' => $user->weather]);
-
     }
 
     /**

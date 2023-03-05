@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Jobs;
 
-use App\Constants\CacheKey;
+use App\Http\Services\CacheService;
 use App\Http\Services\External\Contracts\WeatherApiInterface;
 use App\Jobs\Traits\ExponentialBackoff;
 use App\Models\User;
@@ -13,7 +13,6 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Cache;
 
 class FetchWeatherDataForUserJob implements ShouldQueue
 {
@@ -27,16 +26,16 @@ class FetchWeatherDataForUserJob implements ShouldQueue
     {
     }
 
-    public function handle(WeatherApiInterface $weatherApi): void
+    public function handle(WeatherApiInterface $weatherApi, CacheService $cacheService): void
     {
         $currentWeather = $weatherApi->getCurrentWeatherData($this->user->latitude, $this->user->longitude);
 
-        $this->user->weather()->update(
+        $this->user->weather()->updateOrCreate(
             [
                 'current' => $currentWeather
             ]
         );
 
-        Cache::put(CacheKey::getUserCurrentWeatherKey($this->user), $currentWeather, now()->addHour());
+        $cacheService->updateUserWeather($this->user->id);
     }
 }

@@ -4,12 +4,15 @@ declare(strict_types=1);
 
 namespace App\Constants;
 
-use App\Models\User;
-
 class CacheKey
 {
-    public static function getUserCurrentWeatherKey(User $user): string
+    public static function getUserCurrentWeatherKey(string $userId): string
     {
-        return "user:$user->uuid:current-weather";
+        return "user:$userId:current-weather";
+    }
+
+    public static function getAllUsersKey(): string
+    {
+        return 'users:list';
     }
 }
