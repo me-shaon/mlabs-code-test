@@ -8,7 +8,7 @@ use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 
-class WeatherController
+class UserController
 {
     public function index(): JsonResponse
     {

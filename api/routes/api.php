@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\WeatherController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,4 +14,4 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', [WeatherController::class, 'index'])->name('home');
+Route::get('/api/users', [UserController::class, 'index'])->name('users.list');

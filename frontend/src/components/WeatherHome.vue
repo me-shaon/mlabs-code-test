@@ -21,7 +21,7 @@ const showModal = (user: null) => {
 
 onMounted(async () => {
   loading.value = true;
-  const response = await fetch("http://localhost/");
+  const response = await fetch("http://localhost/api/users");
 
   if (response.ok) {
     users.value = await response.json();
