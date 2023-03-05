@@ -4,12 +4,15 @@ declare(strict_types=1);
 
 namespace Tests\Unit;
 
+use App\Events\UserDataUpdated;
 use App\Jobs\FetchWeatherDataForUserJob;
 use App\Models\User;
 use App\Models\Weather;
 use App\Services\CacheService;
 use App\Services\External\Contracts\WeatherApiInterface;
+use App\Services\UserService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Bus;
 use Mockery;
 use Tests\TestCase;
 
@@ -20,6 +23,7 @@ class FetchWeatherDataForUserJobTest extends TestCase
     public function testFetchWeatherDataForUserJobUpdatedWeatherData()
     {
         // Given
+        Bus::fake();
         $user = User::factory()->create();
         $dummyPayload = [
             'weather' => [
@@ -31,6 +35,7 @@ class FetchWeatherDataForUserJobTest extends TestCase
 
         $apiServiceMock = Mockery::mock(WeatherApiInterface::class);
         $cacheServiceMock = Mockery::mock(CacheService::class);
+        $userServiceMock = Mockery::mock(UserService::class);
 
         // expects
         $apiServiceMock
@@ -42,9 +47,14 @@ class FetchWeatherDataForUserJobTest extends TestCase
             ->expects('updateUserWeather')
             ->once();
 
+        $userServiceMock
+            ->expects('getUsersWeather')
+            ->once()
+            ->andReturn(collect([$user]));
+
         // When
         $job = resolve(FetchWeatherDataForUserJob::class, ['user' => $user]);
-        $job->handle($apiServiceMock, $cacheServiceMock);
+        $job->handle($apiServiceMock, $cacheServiceMock, $userServiceMock);
 
         // Then
         $this->assertDatabaseHas(

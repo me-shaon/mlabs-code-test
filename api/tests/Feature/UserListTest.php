@@ -16,7 +16,7 @@ class UserListTest extends TestCase
     public function testUserListReturnsProperData()
     {
         // Given
-        $users = User::factory()->has(Weather::factory())->count(3)->create();
+        $users = User::factory()->has(Weather::factory())->count(3)->createQuietly();
         $users->load('weather');
         $userServiceMock = Mockery::mock(UserService::class);
         $this->instance(UserService::class, $userServiceMock);
@@ -26,11 +26,6 @@ class UserListTest extends TestCase
             ->expects('getUsersWeather')
             ->once()
             ->andReturn($users);
-
-        $userServiceMock
-            ->expects('syncStaleUsersWeather')
-            ->with($users)
-            ->once();
 
         // When
         $response = $this->get('api/users');

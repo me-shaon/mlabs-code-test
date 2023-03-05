@@ -54,28 +54,4 @@ class UserServiceTest extends TestCase
             $this->assertTrue($user->is($values[$index]));
         }
     }
-
-    public function testSyncStaleUsersWeather()
-    {
-        // Given
-        Bus::fake();
-        $user1 = User::factory()->has(Weather::factory())->createQuietly();
-        $user1->load('weather');
-        $user2 = User::factory()->createQuietly();
-        $users = collect([$user1, $user2]);
-        $cacheServiceMock = Mockery::mock(CacheService::class);
-        $service = resolve(UserService::class, ['cacheService' => $cacheServiceMock]);
-
-        // When
-        $service->syncStaleUsersWeather($users);
-
-        // Then
-        Bus::assertDispatched(function(FetchWeatherDataForUserJob $job) use ($user2) {
-            return $job->user->id === $user2->id;
-        });
-
-        Bus::assertNotDispatched(function(FetchWeatherDataForUserJob $job) use ($user1) {
-            return $job->user->id === $user1->id;
-        });
-    }
 }
