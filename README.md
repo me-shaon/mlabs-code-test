@@ -22,6 +22,8 @@ A simple app to show weather for a set of users.
 
 
 ## System design
+![Design diagram](./docs/assets/design-diagram.png)
+
 - To provide a better UX, we're caching relevant user data instead of calling the Weather API on every page load. 
 - To make sure that we're providing updated data to the users, we're doing the following:
   - Running a scheduled command every 30 minutes (frequency can be changed from config) to update each users weather data by calling the weather api and caching the result.
