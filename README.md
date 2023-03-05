@@ -31,6 +31,7 @@ A simple app to show weather for a set of users.
 
 ## Project installation instruction
 ### API
+- Clone the repository
 - Navigate to `/api` folder
 - Ensure docker is installed and active on host
 - Copy .env.example: `cp .env.example .env` (relevant API keys are added in the `.env.example` for easier testing purpose)
