@@ -13,7 +13,7 @@ class UserCreated
     use Dispatchable;
     use SerializesModels;
 
-    public function __construct(protected User $user)
+    public function __construct(public User $user)
     {
     }
 }

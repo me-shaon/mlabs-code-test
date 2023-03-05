@@ -18,8 +18,6 @@ class UserController
     {
         $users = $this->userService->getUsersWeather();
 
-        $this->userService->syncStaleUsersWeather($users);
-
         return response()->json(UserResource::collection($users));
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Events\UserCreated;
+use App\Listeners\SyncWeatherForUser;
 use App\Listeners\UpdateUserListCache;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
@@ -21,7 +22,8 @@ class EventServiceProvider extends ServiceProvider
             SendEmailVerificationNotification::class,
         ],
         UserCreated::class => [
-            UpdateUserListCache::class
+            UpdateUserListCache::class,
+            SyncWeatherForUser::class
         ]
     ];
 

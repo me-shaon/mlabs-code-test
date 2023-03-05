@@ -4,10 +4,13 @@ declare(strict_types=1);
 
 namespace App\Jobs;
 
+use App\Events\UserDataUpdated;
+use App\Http\Resources\UserResource;
 use App\Jobs\Traits\ExponentialBackoff;
 use App\Models\User;
 use App\Services\CacheService;
 use App\Services\External\Contracts\WeatherApiInterface;
+use App\Services\UserService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -26,16 +29,21 @@ class FetchWeatherDataForUserJob implements ShouldQueue
     {
     }
 
-    public function handle(WeatherApiInterface $weatherApi, CacheService $cacheService): void
+    public function handle(WeatherApiInterface $weatherApi, CacheService $cacheService, UserService $userService): void
     {
         $currentWeather = $weatherApi->getCurrentWeatherData($this->user->latitude, $this->user->longitude);
 
         $this->user->weather()->updateOrCreate(
+            [
+                'user_id' => $this->user->id,
+            ],
             [
                 'current' => $currentWeather
             ]
         );
 
         $cacheService->updateUserWeather($this->user->id);
+
+        UserDataUpdated::dispatch(UserResource::collection($userService->getUsersWeather()));
     }
 }
