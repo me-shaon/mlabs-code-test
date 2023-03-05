@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Jobs;
 
-use App\Http\Services\CacheService;
-use App\Http\Services\External\Contracts\WeatherApiInterface;
 use App\Jobs\Traits\ExponentialBackoff;
 use App\Models\User;
+use App\Services\CacheService;
+use App\Services\External\Contracts\WeatherApiInterface;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -22,7 +22,7 @@ class FetchWeatherDataForUserJob implements ShouldQueue
     use SerializesModels;
     use ExponentialBackoff;
 
-    public function __construct(protected User $user)
+    public function __construct(public User $user)
     {
     }
 

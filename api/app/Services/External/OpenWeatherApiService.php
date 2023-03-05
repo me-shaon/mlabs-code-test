@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Services\External;
+namespace App\Services\External;
 
-use Exception;
-use App\Http\Services\External\Contracts\WeatherApiInterface;
+use App\Exceptions\ApiCallException;
+use App\Services\External\Contracts\WeatherApiInterface;
 use Illuminate\Support\Facades\Http;
 
 class OpenWeatherApiService implements WeatherApiInterface
@@ -16,9 +16,9 @@ class OpenWeatherApiService implements WeatherApiInterface
     }
 
     /**
-     * @throws Exception
+     * @throws ApiCallException
      */
-    public function getCurrentWeatherData(string $lat, string $lon): array
+    public function getCurrentWeatherData(float $lat, float $lon): array
     {
         $response = Http::get("{$this->getBaseURL()}/weather", [
             'lat' => $lat,
@@ -28,7 +28,7 @@ class OpenWeatherApiService implements WeatherApiInterface
         ]);
 
         if ($response->failed()) {
-            throw new Exception(
+            throw new ApiCallException(
                 "Current weather API call with params: ($lat, $lon) failed with error code: {$response->status()}"
             );
         }

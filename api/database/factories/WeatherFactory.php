@@ -19,7 +19,26 @@ class WeatherFactory extends Factory
     {
         return [
             'user_id' => User::factory(),
-            'current' => json_encode([])
+            'current' => [
+                'name' => 'Zocca',
+                'sys' => [
+                    'country' => 'IT'
+                ],
+                'weather' => [
+                    [
+                        'main' => 'Rain',
+                        'description' => 'moderate rain'
+                    ]
+                ],
+                'main' => [
+                    'temp' => '29',
+                    'temp_min' => '23',
+                    'temp_max' => '31',
+                    'feels_like' => '30',
+                    'humidity' => '67',
+                    'pressure' => '1212'
+                ]
+            ]
         ];
     }
 }

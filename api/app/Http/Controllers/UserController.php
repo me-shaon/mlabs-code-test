@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Http\Resources\UserResource;
-use App\Http\Services\UserService;
+use App\Services\UserService;
 use Illuminate\Http\JsonResponse;
 
 class UserController

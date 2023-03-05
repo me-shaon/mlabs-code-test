@@ -2,27 +2,31 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Services;
+namespace App\Services;
 
 use App\Constants\CacheKey;
 use App\Models\User;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 
 class CacheService
 {
+    public const TTL_ONE_DAY = 86400;
+    public const TTL_ONE_HOUR = 3600;
+
     public function updateUserList()
     {
-        Cache::put(CacheKey::getAllUsersKey(), User::pluck('id'), now()->addDay());
+        $userIds = User::orderBy('id')->pluck('id')->toArray();
+
+        Cache::put(CacheKey::getAllUsersKey(), $userIds, self::TTL_ONE_DAY);
     }
 
-    public function getUserList(): Collection
+    public function getUserList(): array
     {
         if (!Cache::has(CacheKey::getAllUsersKey())) {
             $this->updateUserList();
         }
 
-        return Cache::get(CacheKey::getAllUsersKey(), collect());
+        return Cache::get(CacheKey::getAllUsersKey());
     }
 
     public function updateUserWeather(int $userId)
@@ -30,7 +34,7 @@ class CacheService
         Cache::put(
             CacheKey::getUserCurrentWeatherKey($userId),
             User::with('weather')->find($userId),
-            now()->addHour()
+            self::TTL_ONE_HOUR
         );
     }
 

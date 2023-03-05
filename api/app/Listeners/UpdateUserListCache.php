@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Listeners;
 
 use App\Events\UserCreated;
-use App\Http\Services\CacheService;
+use App\Services\CacheService;
 
 class UpdateUserListCache
 {
