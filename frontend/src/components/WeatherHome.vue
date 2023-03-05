@@ -14,6 +14,7 @@ const echo = new Echo({
   cluster: 'ap2',
   forceTLS: true,
 });
+
 echo.channel("users-list")
     .listen("UserDataUpdated", (e) => {
       users.value = e.users;
@@ -46,24 +47,27 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="flex flex-col items-center justify-center w-screen min-h-screen text-gray-700 p-10 bg-gradient-to-br from-pink-200 via-purple-200 to-indigo-200 ">
-    <div class="flex flex-col space-y-6 w-full max-w-screen-lg bg-white p-10 mt-10 rounded-xl ring-8 ring-white ring-opacity-40">
-      <div v-if="loading" class="flex justify-center">
-        <img src="/loader.gif" alt="Loading..."/>
-      </div>
-
-      <div v-else>
-        <div v-if="!users">
-          <h3 class="text-center text-gray-500">No users data found.</h3>
+  <div>
+    <div class="flex flex-col items-center justify-center w-screen min-h-screen text-gray-700 p-10 bg-gradient-to-br from-pink-200 via-purple-200 to-indigo-200 ">
+      <h2 class="text-center text-3xl">Weather app</h2>
+      <div class="flex flex-col space-y-6 w-full max-w-screen-lg bg-white p-10 mt-10 rounded-xl ring-8 ring-white ring-opacity-40">
+        <div v-if="loading" class="flex justify-center">
+          <img src="/loader.gif" alt="Loading..."/>
         </div>
-        <div v-else class="divide-y divide-dashed">
-          <div v-for="user in users" :key="user.uuid" @click="showModal(user)" class="flex justify-between items-center py-4 cursor-pointer">
-            <span class="font-semibold text-lg w-2/4">{{ user.name }}</span>
-            <span class="font-normal text-lg w-2/4 text-center">{{ user?.weather?.summary.location || '-' }}</span>
-            <span class="font-normal text-lg w-1/4 text-right">{{ user?.weather?.summary.current_temp || '-' }}</span>
-          </div>
 
-          <ModalsContainer />
+        <div v-else>
+          <div v-if="!users">
+            <h3 class="text-center text-gray-500">No users data found.</h3>
+          </div>
+          <div v-else class="divide-y divide-dashed">
+            <div v-for="user in users" :key="user.uuid" @click="showModal(user)" class="flex justify-between items-center py-4 cursor-pointer">
+              <span class="font-semibold text-lg w-2/4">{{ user.name }}</span>
+              <span class="font-normal text-lg w-2/4 text-center">{{ user?.weather?.summary.location || '-' }}</span>
+              <span class="font-normal text-lg w-1/4 text-right">{{ user?.weather?.summary.current_temp || '-' }}</span>
+            </div>
+
+            <ModalsContainer />
+          </div>
         </div>
       </div>
     </div>

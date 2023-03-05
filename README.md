@@ -1,48 +1,74 @@
-# Fullstack Challenge
+# Fullstack Challenge (Weather app)
+A simple app to show weather for a set of users.
 
-## Instructions
-Using Laravel and VueJS, create an application which shows the weather for a set of users.
-- Clone this repository. 
-- Once completed, send a link of the clone repository to interviewer and let them know how long the exercise took. 
-- Update the frontend landing page to show a list of users and their current weather.
-- Clicking a user opens a modal or screen which shows that users detailed weather report.
-- Weather update should be no older than 1 hour.
-- Internal API request(s) to retrieve weather data should take no longer than 500ms. Consider that external APIs could and will take longer than this from time to time and should be accounted for. 
-- We are looking for attention to detail!
-- Instructions are purposely left somewhat open-ended to allow the developer to make some of their own decisions on implementation and design. 
-- This is not a designer test so the frontend does not have to look "good", but of course bonus points if you can make it look appealing. 
+### Demo
 
-## Things to consider:
-- Chose your own weather api such as https://openweathermap.org/api or https://www.weather.gov/documentation/services-web-api.
-- Testability.
-- Best practices.
-- Design patterns.
-- Availability of external APIs is not guaranteed and should not cause page to crash.
-- Twenty randomized users are added via the seeder process, each having their own unique location (longitude and latitude).
-- Redis is available (Docker service) if you wish to use it.
-- Queues, workers, websockets could be useful.
-- Feel free to use a frontend UI library such as PrimeVue, Vuetify, Bootstrap, Tailwind, etc. 
-- Anything else you want to do to show off your coding chops!
+#### List of users
+![list of users](./docs/assets/home.png)
 
-## To run the local dev environment:
+#### Single user details
+![single use details](./docs/assets/details.png)
 
-### API
+
+### Tools & Tech stack used
+- Laravel (back-end api)
+- VueJS (front-end)
+- TailwindCSS (UI)
+- Pusher (WebSocket)
+- Redis (Cache)
+- MySQL (Database)
+- [OpenWeather API](https://openweathermap.org/api)
+- GrumPHP (Code quality)
+
+
+### System design
+- To provide a better UX, we're caching relevant user data instead of calling the Weather API on every page load. 
+- To make sure that we're providing updated data to the users, we're doing the following
+  - Running a scheduled command every 30 minutes (frequency can be changed from config) to update each users weather data by calling the weather api and caching the result.
+  - Every time a new user is created we'll run an async job to fetch weather data for this user from the weather api.
+- We're also providing real time update via websocket so that the user will see the updated result in the page if the users data is updated via the scheduled job, or any new user is created.
+
+
+### Project installation instruction
+#### API
 - Navigate to `/api` folder
 - Ensure version docker installed is active on host
-- Copy .env.example: `cp .env.example .env`
+- Copy .env.example: `cp .env.example .env` (relevant API keys are added in the `.env.example` for easier testing purpose)
 - Start docker containers `docker compose up` (add `-d` to run detached)
 - Connect to container to run commands: `docker exec -it fullstack-challenge-app-1 bash`
   - Make sure you are in the `/var/www/html` path
   - Install php dependencies: `composer install`
   - Setup app key: `php artisan key:generate`
-  - Migrate database: `php artisan migrate` 
-  - Seed database: `php artisan db:seed`
+  - Migrate database: `php artisan migrate --seed`
+  - Run queue listener: `php artisan queue:listen`
   - Run tests: `php artisan test`
-- Visit api: `http://localhost`
+  - If you want to run the scheduler: `php artisan schedule:work`
 
-### Frontend
+#### Frontend
 - Navigate to `/frontend` folder
 - Ensure nodejs v18 is active on host
 - Install javascript dependencies: `npm install`
 - Run frontend: `npm run dev`
 - Visit frontend: `http://localhost:5173`
+
+#### Testing the real time update
+A test command is added to create dummy user data to verify that real time update is working. To test it:
+- Open the page in browser: `http://localhost:5173`
+- From terminal, connect to container to run commands: `docker exec -it fullstack-challenge-app-1 bash`
+  - Run: `php artisan create-new-user` (make sure that the queue worker is running)
+- See that the newly created users data is available in the browser (this might take a few seconds depending the queue processing and data fetching from the weather api)
+
+### Production deployment
+Some of the things are intentionally skipped as it is only for coding test. 
+But we'll consider the following if this app needs to be deployed in production:
+- `Laravel horizon` to manage and monitor async jobs.
+- Setting up the cron scheduler.
+- In the front-end, the API URL and app keys are hard-coded for now. But it needs to be read from the `environment variables`.
+
+### Note
+A few things were considered while implementing the solution:
+- Followed loose coupling for the Weather API service (`OpenWeatherApiService`) using an interface (`WeatherApiInterface`) and bound the implementation in service container so that it's easier to switch to other API service if needed.
+- Used `exponential backoff strategy` for third-party API calling to avoid rate limiting and service unavailability issues.
+- Kept a separate DB table for users weather data so that it'll be easier to store more relevant data (like `forecast` etc.) in the future. 
+- The cron scheduler is running every 30 minutes just to be on the safe side not to have data older than 1 hour. This can be changed in config if needed. 
+- For faster development, Eloquent ORM is used. However, the implementation can be changed to `Query builder` to get better performance.
